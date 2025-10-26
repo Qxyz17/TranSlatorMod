@@ -7,16 +7,6 @@ buildscript {
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
-    // 强制 buildscript 用 JDK 8 编译
-    configurations.classpath {
-        resolutionStrategy {
-            eachDependency { DependencyResolveDetails details ->
-                if (details.requested.group == 'org.codehaus.groovy' && details.requested.name == 'groovy-all') {
-                    details.useVersion '2.4.21' // 适配 JDK 8 的 Groovy 版本
-                }
-            }
-        }
-    }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
@@ -26,29 +16,23 @@ version = "1.0.0"
 group = "com.translator"
 archivesBaseName = "translatormod"
 
-// 1. 强制指定 Java 版本为 1.8（JDK 8）
+// 强制 Java 版本为 1.8（移除高版本 Gradle 语法）
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-// 2. 显式配置编译选项，强制用 JDK 8 特性
+// 简化编译选项（适配 Gradle 2.7）
 tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8" // 解决中文乱码
-    options.compilerArgs = [
-        "-source", "1.8",       // 源文件版本
-        "-target", "1.8",       // 目标字节码版本
-        "-bootclasspath", "${System.env.JAVA_HOME}/jre/lib/rt.jar" // 强制 JDK 8 引导类路径
-    ]
-    // 确保使用 JDK 8 编译器
-    options.fork = true
-    options.forkOptions.javaHome = new File(System.env.JAVA_HOME)
+    options.encoding = "UTF-8"
+    options.compilerArgs << "-source" << "1.8" << "-target" << "1.8"
+    // 移除 options.forkOptions.javaHome（旧 Gradle 不支持）
+    options.fork = true // 仅保留 fork 模式
 }
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "eclipse"
     mappings = "stable_22"
-    // 3. Minecraft 编译依赖 JDK 8
-    javaHome = System.env.JAVA_HOME
+    // 移除 minecraft 块中的 javaHome（旧 ForgeGradle 不支持）
 }
 
 dependencies {
@@ -69,7 +53,7 @@ processResources {
     }
 }
 
-// 4. 验证 JDK 版本（不满足则报错终止构建）
+// 保留 JDK 版本检查（确保环境正确）
 task checkJdkVersion {
     doLast {
         def javaVersion = JavaVersion.current()
@@ -80,5 +64,4 @@ task checkJdkVersion {
     }
 }
 
-// 构建前先验证 JDK 版本
 compileJava.dependsOn checkJdkVersion
