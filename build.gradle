@@ -1,3 +1,17 @@
+// 顶级buildscript {
+    repositories {
+        // 添加 Forge 插件仓库（关键：获取 forge 插件）
+        maven { url = "https://files.minecraftforge.net/maven" }
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        // 指定 Forge Gradle 插件版本（1.8.9 对应 2.1 版本）
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+
+// 应用 Forge 插件（修正插件 ID）
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "1.0.0"
@@ -5,13 +19,13 @@ group = "com.translator"
 archivesBaseName = "translatormod"
 
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
+    version = "1.8.9-11.15.1.2318-1.8.9"  // 1.8.9 Forge 版本
     runDir = "eclipse"
-    mappings = "stable_22"
+    mappings = "stable_22"  // 1.8.9 对应 mappings 版本
 }
 
 dependencies {
-    // 无额外依赖，使用Forge自带库
+    // 无需额外依赖
 }
 
 processResources {
@@ -20,7 +34,7 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+        expand 'version': project.version, 'mcversion': project.minecraft.version
     }
 
     from(sourceSets.main.resources.srcDirs) {
