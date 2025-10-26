@@ -20,7 +20,7 @@
 
 ## 安装方法
 1. 确保 Minecraft 已安装 Forge 1.8.9
-2. 下载模组 Jar 文件（[Releases](https://github.com/你的用户名/TranslatorMod/releases) 页面）
+2. 下载模组 Jar 文件（[Releases](https://github.com/Qxyz17/TranslatorMod/releases) 页面）
 3. 将 Jar 文件放入 `.minecraft/mods` 目录
 4. 启动游戏，在模组列表中确认“Chat Translator”已启用
 
