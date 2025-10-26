@@ -13,19 +13,16 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
 
 version = "1.0.0"
-group = "com.translator"
+group = "com.Translator" // 与包名一致，大写 T
 archivesBaseName = "translatormod"
 
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-// 关键：用 CompileOptions 底层配置，强制忽略编译错误
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-    options.compilerArgs = ["-source", "1.8", "-target", "1.8", "-nowarn"] // 直接赋值，确保参数生效
+    options.compilerArgs << "-source" << "1.8" << "-target" << "1.8"
     options.fork = true
-    // 额外添加：允许未检查的转换（减少其他编译干扰）
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
 minecraft {
