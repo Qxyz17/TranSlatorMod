@@ -1,27 +1,54 @@
 buildscript {
     repositories {
-        // 添加 Forge 插件仓库
         maven { url = "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        // 指定 Forge Gradle 插件版本（1.8.9 必须用 2.1 版本）
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+    // 强制 buildscript 用 JDK 8 编译
+    configurations.classpath {
+        resolutionStrategy {
+            eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == 'org.codehaus.groovy' && details.requested.name == 'groovy-all') {
+                    details.useVersion '2.4.21' // 适配 JDK 8 的 Groovy 版本
+                }
+            }
+        }
     }
 }
 
-// 应用 Forge 插件
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'java'
 
 version = "1.0.0"
 group = "com.translator"
 archivesBaseName = "translatormod"
 
+// 1. 强制指定 Java 版本为 1.8（JDK 8）
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+// 2. 显式配置编译选项，强制用 JDK 8 特性
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8" // 解决中文乱码
+    options.compilerArgs = [
+        "-source", "1.8",       // 源文件版本
+        "-target", "1.8",       // 目标字节码版本
+        "-bootclasspath", "${System.env.JAVA_HOME}/jre/lib/rt.jar" // 强制 JDK 8 引导类路径
+    ]
+    // 确保使用 JDK 8 编译器
+    options.fork = true
+    options.forkOptions.javaHome = new File(System.env.JAVA_HOME)
+}
+
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"  // 1.8.9 对应的 Forge 版本
+    version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "eclipse"
-    mappings = "stable_22"  // 1.8.9 对应的 mappings 版本
+    mappings = "stable_22"
+    // 3. Minecraft 编译依赖 JDK 8
+    javaHome = System.env.JAVA_HOME
 }
 
 dependencies {
@@ -41,3 +68,17 @@ processResources {
         exclude 'mcmod.info'
     }
 }
+
+// 4. 验证 JDK 版本（不满足则报错终止构建）
+task checkJdkVersion {
+    doLast {
+        def javaVersion = JavaVersion.current()
+        if (javaVersion != JavaVersion.VERSION_1_8) {
+            throw new GradleException("必须使用 JDK 8！当前版本：${javaVersion}")
+        }
+        println "✅ 已确认使用 JDK 8：${System.env.JAVA_HOME}"
+    }
+}
+
+// 构建前先验证 JDK 版本
+compileJava.dependsOn checkJdkVersion
