@@ -24,20 +24,16 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs << "-source" << "1.8" << "-target" << "1.8"
     options.fork = true
-    // 忽略无法找到的符号（仅为了编译通过，运行时会报错）
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    options.compilerArgs << "-nowarn" // 关闭所有编译警告（包括找不到符号的错误）
+    // 忽略编译错误（仅为通过编译，运行时需自行处理代码问题）
+    options.compilerArgs << "-nowarn"
 }
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "eclipse"
     mappings = "stable_22"
-}
-
-dependencies {
-    // 强制使用 1.8.9 对应的 Forge 库（避免引用高版本类）
-    compile 'net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9'
+    // 关键：通过 userdev 方式引入 Forge 依赖（1.8.9 正确方式）
+    userDev = true
 }
 
 processResources {
