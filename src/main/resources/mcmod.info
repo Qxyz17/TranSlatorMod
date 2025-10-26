@@ -1,16 +1,12 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "translator",
+  "name": "Translator Mod",
+  "description": "Tran game msg.",
   "version": "${version}",
-  "mcversion": "${mcversion}",
-  "url": "",
-  "updateUrl": "",
-  "authorList": ["ExampleDude"],
+  "mcversion": "1.8.9",
+  "url": "https://github.com/Qxyz17/TranSlatorMod",
+  "updateUrl": "https://github.com/Qxyz17/TranSlatorMod/releases",
   "credits": "The Forge and FML guys, for making this example",
-  "logoFile": "",
-  "screenshots": [],
-  "dependencies": []
 }
 ]
