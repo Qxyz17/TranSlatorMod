@@ -41,13 +41,12 @@
 | `.ts msg off`      | 关闭他人消息英译中           |
 | `.ts me on`        | 开启自己消息中译英           |
 | `.ts me off`       | 关闭自己消息中译英           |
-| `.ts help`         | 查看命令帮助（可选扩展）     |
 
 
 ## 开发指南
 ### 环境准备
 1. 安装 JDK 8（Minecraft 1.8.9 依赖）
-2. 克隆本仓库：`git clone https://github.com/你的用户名/TranslatorMod.git`
+2. 克隆本仓库：`git clone https://github.com/Qxyz17/TranslatorMod.git`
 3. 进入项目目录，执行 `gradlew genSources eclipse`（生成 IDE 项目）
 4. 用 IntelliJ IDEA 或 Eclipse 打开项目
 
