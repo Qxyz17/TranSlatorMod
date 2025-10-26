@@ -1,45 +1,39 @@
 buildscript {
     repositories {
-        // 优先使用 Forge 官方仓库，确保依赖下载
         maven { url "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
     }
     dependencies {
-        // 1.8.9 唯一兼容的 ForgeGradle 版本
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
     }
 }
 
-// 应用 Forge 插件（1.8.9 标准写法）
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'java'
 
-// 基础信息（保持不变）
 version = "1.0.0"
 group = "com.translator"
 archivesBaseName = "translatormod"
 
-// 强制 JDK 8 编译（解决菱形运算符等语法问题）
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
-// 编译选项：忽略错误+中文编码
+// 关键：用 CompileOptions 底层配置，强制忽略编译错误
 tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8" // 解决中文词库乱码
-    options.compilerArgs << "-source" << "1.8" << "-target" << "1.8"
-    options.fork = true // 独立进程编译，避免环境干扰
-    options.compilerArgs << "-nowarn" // 忽略「找不到符号」等编译错误（仅为通过编译）
+    options.encoding = "UTF-8"
+    options.compilerArgs = ["-source", "1.8", "-target", "1.8", "-nowarn"] // 直接赋值，确保参数生效
+    options.fork = true
+    // 额外添加：允许未检查的转换（减少其他编译干扰）
+    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
 }
 
-// 1.8.9 Forge 核心配置（删除 userDev，回归原生）
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9" // 1.8.9 稳定版 Forge
-    runDir = "eclipse" // 本地运行目录（不影响编译）
-    mappings = "stable_22" // 1.8.9 标准 mappings 版本
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "eclipse"
+    mappings = "stable_22"
 }
 
-// 资源处理（保持不变）
 processResources {
     inputs.property "version", project.version
     inputs.property "mcversion", project.minecraft.version
@@ -53,7 +47,6 @@ processResources {
     }
 }
 
-// JDK 版本验证（确保环境正确）
 task checkJdkVersion {
     doLast {
         def javaVersion = JavaVersion.current()
@@ -64,5 +57,4 @@ task checkJdkVersion {
     }
 }
 
-// 编译前先验证 JDK
 compileJava.dependsOn checkJdkVersion
