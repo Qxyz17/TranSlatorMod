@@ -1,0 +1,55 @@
+name: Minecraft Mod Auto Build (Windows)
+
+# 触发条件：main 分支有代码推送或 Pull Request 合并
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    # 运行环境：Windows 最新版
+    runs-on: windows-latest
+
+    steps:
+      # 步骤1：拉取代码仓库
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 步骤2：配置 JDK 8（Minecraft 1.8.9 必须用 JDK 8）
+      - name: Set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'  # 推荐使用 Eclipse Temurin JDK
+          cache: gradle  # 缓存 Gradle 依赖，加速构建
+
+      # 步骤3：给 gradlew.bat 赋予执行权限（Windows 可选，保险起见添加）
+      - name: Make gradlew.bat Executable
+        run: |
+          if (-not (Test-Path .\gradlew.bat)) {
+            Write-Error "gradlew.bat not found in root directory!"
+            exit 1
+          }
+          # Windows 下通过 PowerShell 确保文件可执行
+          Set-ExecutionPolicy Bypass -Scope Process -Force
+          .\gradlew.bat --version  # 测试 gradle 是否可用
+
+      # 步骤4：执行构建（调用根目录的 gradlew.bat）
+      - name: Build Mod with Gradle
+        run: .\gradlew.bat build
+        env:
+          # 可选：设置编码，避免中文乱码
+          JAVA_OPTS: "-Dfile.encoding=UTF-8"
+
+      # 步骤5：上传构建产物（Jar 文件）到 GitHub Artifacts
+      - name: Upload Build Output
+        uses: actions/upload-artifact@v4
+        with:
+          name: TranslatorMod-Jars  # 产物包名称
+          path: |
+            build/libs/*.jar  # 上传所有 Jar 文件
+            !build/libs/*-sources.jar  # 排除源码 Jar（可选）
+            !build/libs/*-dev.jar      # 排除开发版 Jar（可选）
+          retention-days: 30  # 产物保留 30 天
