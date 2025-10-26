@@ -29,8 +29,8 @@
 1. 找到模组 Jar 文件，用压缩软件打开
 2. 进入 `assets/translator/lang/` 目录
 3. 编辑 `en_to_zh.txt`（英译中）或 `zh_to_en.txt`（中译英）
-   - 格式：`关键词\t翻译结果`（每行一条，Tab 分隔）
-   - 示例：`T-shirt\tT恤`、`U盘\tUSB flash drive`
+   - 格式：`关键词     翻译结果`（每行一条，Tab 分隔）
+   - 示例：`T-shirt     T恤`、`U盘     USB flash drive`
 4. 保存后重启游戏生效
 
 
