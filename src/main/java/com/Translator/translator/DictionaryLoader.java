@@ -24,7 +24,7 @@ public class DictionaryLoader {
     private static void loadDict(String fileName, Map<String, String> dict) {
         try {
             ResourceLocation res = new ResourceLocation(TranslatorMod.MODID, "lang/" + fileName);
-            InputStream in = FMLCommonHandler.instance().getClassLoader().getResourceAsStream(res.getResourcePath());
+            InputStream in = Thread.currentThread().getContextClassLoader().getResourceAsStream(res.getResourcePath());
             
             if (in == null) {
                 System.err.println("[TranslatorMod] 缺失词库：" + fileName);
@@ -49,3 +49,4 @@ public class DictionaryLoader {
         }
     }
 }
+
